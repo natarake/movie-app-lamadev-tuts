@@ -27,7 +27,7 @@ const Video = () => {
   const { currentUser } = useSelector((state) => state.user);
   const { currentVideo } = useSelector((state) => state.video);
   const dispatch = useDispatch();
-  const path = useLocation().pathname.split("/")[2];
+  const path = useLocation().pathname.split("/")[3];
 
   const [channel, setChannel] = useState({});
   const timeago = moment(currentVideo?.createdAt).fromNow();
