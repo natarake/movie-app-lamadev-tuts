@@ -1,15 +1,15 @@
-import axios from "axios";
 import { useEffect } from "react";
 import { useState } from "react";
 import styled from "styled-components";
 import Card from "../components/Card";
+import { publicRequest } from "../utilities/requestMethods";
 
 const Recommendation = ({ tags }) => {
   const [videos, setVideos] = useState([]);
 
   useEffect(() => {
     const fetchVideos = async () => {
-      const res = await axios.get(`/videos/tags?tags=${tags}`);
+      const res = await publicRequest.get(`/videos/tags?tags=${tags}`);
       setVideos(res.data);
     };
     fetchVideos();

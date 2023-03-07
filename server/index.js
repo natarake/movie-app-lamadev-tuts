@@ -21,6 +21,7 @@ const connect = () => {
       throw err;
     });
 };
+mongoose.set("strictQuery", false);
 
 app.use(cors());
 app.use(cookieParser());

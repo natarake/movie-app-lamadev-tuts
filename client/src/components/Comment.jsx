@@ -1,7 +1,7 @@
-import axios from "axios";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
+import { publicRequest } from "../utilities/requestMethods";
 
 const Comment = ({ comment }) => {
   const [channel, setChannel] = useState({});
@@ -9,7 +9,7 @@ const Comment = ({ comment }) => {
 
   useEffect(() => {
     const fetchComment = async () => {
-      const res = await axios.get(`/users/find/${comment.userId}`);
+      const res = await publicRequest.get(`/users/find/${comment.userId}`);
       setChannel(res.data);
     };
     fetchComment();

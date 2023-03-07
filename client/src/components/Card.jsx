@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 import moment from "moment/moment";
 import { useEffect, useState } from "react";
-import axios from "axios";
+import { publicRequest } from "../utilities/requestMethods";
 
 const Card = ({ type, video }) => {
   const [channel, setChannel] = useState({});
@@ -10,7 +10,7 @@ const Card = ({ type, video }) => {
 
   useEffect(() => {
     const fetchChannel = async () => {
-      const res = await axios.get(`/users/find/${video.userId}`);
+      const res = await publicRequest.get(`/users/find/${video.userId}`);
       setChannel(res.data);
     };
     fetchChannel();

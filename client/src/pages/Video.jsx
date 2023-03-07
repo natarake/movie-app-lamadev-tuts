@@ -9,7 +9,6 @@ import {
   dislike,
 } from "../redux/videoSlice";
 import moment from "moment/moment";
-import axios from "axios";
 
 import styled from "styled-components";
 import ThumbUpOffAltIcon from "@mui/icons-material/ThumbUpOffAlt";
@@ -22,6 +21,7 @@ import AddTaskIcon from "@mui/icons-material/AddTask";
 import Comments from "../components/Comments";
 import { subscription } from "../redux/userSlice";
 import Recommendation from "../components/Recommendation";
+import { publicRequest } from "../utilities/requestMethods";
 
 const Video = () => {
   const { currentUser } = useSelector((state) => state.user);
@@ -36,8 +36,8 @@ const Video = () => {
     dispatch(fetchStart());
     const fetchData = async () => {
       try {
-        const videoRes = await axios.get(`/videos/find/${path}`);
-        const channelRes = await axios.get(
+        const videoRes = await publicRequest.get(`/videos/find/${path}`);
+        const channelRes = await publicRequest.get(
           `/users/find/${videoRes.data.userId}`
         );
         setChannel(channelRes.data);
@@ -50,19 +50,19 @@ const Video = () => {
   }, [path, dispatch]);
 
   const handleLike = async () => {
-    await axios.put(`/users/like/${currentVideo?._id}`);
+    await publicRequest.put(`/users/like/${currentVideo?._id}`);
     dispatch(like(currentUser._id));
   };
 
   const handleDislike = async () => {
-    await axios.put(`/users/dislike/${currentVideo?._id}`);
+    await publicRequest.put(`/users/dislike/${currentVideo?._id}`);
     dispatch(dislike(currentUser._id));
   };
 
   const handleSub = async () => {
     currentUser?.subscribedUsers.includes(channel._id)
-      ? await axios.put(`/users/unsub/${channel._id}`)
-      : await axios.put(`/users/sub/${channel._id}`);
+      ? await publicRequest.put(`/users/unsub/${channel._id}`)
+      : await publicRequest.put(`/users/sub/${channel._id}`);
     dispatch(subscription(channel._id));
   };
 

@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Card from "../components/Card";
-import axios from "axios";
+import { publicRequest } from "../utilities/requestMethods";
 
 const Home = ({ type }) => {
   const [videos, setVideos] = useState([]);
 
   useEffect(() => {
     const fetchVideos = async () => {
-      const res = await axios.get(`/videos/${type}`);
+      const res = await publicRequest.get(`/videos/${type}`);
       setVideos(res.data);
     };
     fetchVideos();

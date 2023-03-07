@@ -1,7 +1,7 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
+import { publicRequest } from "../utilities/requestMethods";
 import Comment from "./Comment";
 
 const Comments = ({ videoId }) => {
@@ -11,7 +11,7 @@ const Comments = ({ videoId }) => {
   useEffect(() => {
     const fetchComments = async () => {
       try {
-        const res = await axios.get(`/comments/${videoId}`);
+        const res = await publicRequest.get(`/comments/${videoId}`);
         setComments(res.data);
       } catch (err) {}
     };
