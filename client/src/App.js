@@ -27,7 +27,7 @@ function App() {
                   <Route path="subscriptions" element={<Home type="sub" />} />
                   <Route path="search" element={<Search />} />
                   <Route path="signin" element={<Signin />} />
-                  <Route path="video">
+                  <Route path="video/find">
                     <Route path=":id" element={<Video />} />
                   </Route>
                 </Route>
