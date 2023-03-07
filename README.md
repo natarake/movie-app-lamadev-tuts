@@ -4,6 +4,10 @@
 
 GLadTube is a Full-stack YouTube clone built using the MERN stack. It is based on Lama Dev's [YouTube Tutorial](https://www.youtube.com/watch?v=CCF-xV3RSSs&list=PLj-4DlPRT48nfYgDK00oTjlDF4O0ZZyG8&index=32)
 
+## What went well
+
+Following this tutorial I was able to strengthen my understanding of core MERN stack concepts. Additionally I was able to add styled components to my UI library repertoire.
+
 ## Run this app on your local machine
 
 Separately on the client and server directory, you can run:
