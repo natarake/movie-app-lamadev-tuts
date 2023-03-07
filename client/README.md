@@ -1,6 +1,6 @@
-# Getting Started with Create React App
+# GLadTube
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+GLadTube is a Full-stack YouTube clone built using the MERN stack. It is based on Lama Dev's [YouTube Tutorial](https://www.youtube.com/watch?v=CCF-xV3RSSs&list=PLj-4DlPRT48nfYgDK00oTjlDF4O0ZZyG8&index=32)
 
 ## Available Scripts
 

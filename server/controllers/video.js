@@ -26,7 +26,7 @@ export const updateVideo = async (req, res, next) => {
       );
       res.status(200).json(updatedVideo);
     } else {
-      return next(createError(403, "You can update only your video!"));
+      return next(createError(403, "You can only update your own video!"));
     }
   } catch (err) {
     next(err);
@@ -41,7 +41,7 @@ export const deleteVideo = async (req, res, next) => {
       await Video.findByIdAndDelete(req.params.id);
       res.status(200).json("The video has been deleted.");
     } else {
-      return next(createError(403, "You can delete only your video!"));
+      return next(createError(403, "You can only delete your own video!"));
     }
   } catch (err) {
     next(err);

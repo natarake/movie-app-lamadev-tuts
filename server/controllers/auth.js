@@ -1,4 +1,3 @@
-import mongoose from "mongoose";
 import User from "../models/User.js";
 import bcrypt from "bcryptjs";
 import { createError } from "../error.js";
@@ -25,11 +24,12 @@ export const signin = async (req, res, next) => {
     if (!user) return next(createError(404, "User not found"));
 
     const isCorrect = await bcrypt.compare(req.body.password, user.password);
-    if (!isCorrect) return next(createError(404, "Invalid password"));
+    if (!isCorrect) return next(createError(400, "Wrong credentials"));
 
     const token = jwt.sign({ id: user._id }, process.env.JWT);
     // remove password before sending to user
-    const {password, ...others} = user._doc;
+    // if user only there is unnecessary objects within that is _doc which contains user information
+    const { password, ...others } = user._doc;
 
     res
       .cookie("access_token", token, {
@@ -37,6 +37,36 @@ export const signin = async (req, res, next) => {
       })
       .status(200)
       .json(others);
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const googleAuth = async (req, res, next) => {
+  try {
+    const user = await User.findOne({ email: req.body.email });
+    if (user) {
+      const token = jwt.sign({ id: user._id }, process.env.JWT);
+      res
+        .cookie("access_token", token, {
+          httpOnly: true,
+        })
+        .status(200)
+        .json(user._doc);
+    } else {
+      const newUser = new User({
+        ...req.body,
+        fromGoogle: true,
+      });
+      const savedUser = await newUser.save();
+      const token = jwt.sign({ id: savedUser._id }, process.env.JWT);
+      res
+        .cookie("access_token", token, {
+          httpOnly: true,
+        })
+        .status(200)
+        .json(savedUser._doc);
+    }
   } catch (err) {
     next(err);
   }

@@ -7,17 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Video from "./pages/Video";
 import Home from "./pages/Home";
 import Signin from "./pages/Signin";
-
-const Container = styled.div`
-  display: flex;
-`;
-const Main = styled.div`
-  flex: 7;
-  background-color: ${({ theme }) => theme.bg};
-`;
-const Wrapper = styled.div`
-  padding: 22px 96px;
-`;
+import Search from "./pages/Search";
 
 function App() {
   const [darkMode, setDarkMode] = useState(true);
@@ -35,9 +25,10 @@ function App() {
                   <Route index element={<Home type="random" />} />
                   <Route path="trends" element={<Home type="trend" />} />
                   <Route path="subscriptions" element={<Home type="sub" />} />
-                  <Route path="signin" element={<Signin />}/>
+                  <Route path="search" element={<Search />} />
+                  <Route path="signin" element={<Signin />} />
                   <Route path="video">
-                    <Route path=":id" element={<Video />}/>
+                    <Route path=":id" element={<Video />} />
                   </Route>
                 </Route>
               </Routes>
@@ -50,3 +41,14 @@ function App() {
 }
 
 export default App;
+
+const Container = styled.div`
+  display: flex;
+`;
+const Main = styled.div`
+  flex: 7;
+  background-color: ${({ theme }) => theme.bg};
+`;
+const Wrapper = styled.div`
+  padding: 22px 96px;
+`;

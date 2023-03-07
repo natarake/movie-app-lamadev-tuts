@@ -1,10 +1,139 @@
+import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useLocation } from "react-router-dom";
+import {
+  fetchFailure,
+  fetchStart,
+  fetchSuccess,
+  like,
+  dislike,
+} from "../redux/videoSlice";
+import moment from "moment/moment";
+import axios from "axios";
+
 import styled from "styled-components";
 import ThumbUpOffAltIcon from "@mui/icons-material/ThumbUpOffAlt";
+import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import ThumbDownOffAltIcon from "@mui/icons-material/ThumbDownOffAlt";
+import ThumbDownIcon from "@mui/icons-material/ThumbDown";
 import ReplyIcon from "@mui/icons-material/Reply";
 import AddTaskIcon from "@mui/icons-material/AddTask";
+
 import Comments from "../components/Comments";
-import Card from "../components/Card";
+import { subscription } from "../redux/userSlice";
+import Recommendation from "../components/Recommendation";
+
+const Video = () => {
+  const { currentUser } = useSelector((state) => state.user);
+  const { currentVideo } = useSelector((state) => state.video);
+  const dispatch = useDispatch();
+  const path = useLocation().pathname.split("/")[2];
+
+  const [channel, setChannel] = useState({});
+  const timeago = moment(currentVideo?.createdAt).fromNow();
+
+  useEffect(() => {
+    dispatch(fetchStart());
+    const fetchData = async () => {
+      try {
+        const videoRes = await axios.get(`/videos/find/${path}`);
+        const channelRes = await axios.get(
+          `/users/find/${videoRes.data.userId}`
+        );
+        setChannel(channelRes.data);
+        dispatch(fetchSuccess(videoRes.data));
+      } catch (err) {
+        dispatch(fetchFailure());
+      }
+    };
+    fetchData();
+  }, [path, dispatch]);
+
+  const handleLike = async () => {
+    await axios.put(`/users/like/${currentVideo?._id}`);
+    dispatch(like(currentUser._id));
+  };
+
+  const handleDislike = async () => {
+    await axios.put(`/users/dislike/${currentVideo?._id}`);
+    dispatch(dislike(currentUser._id));
+  };
+
+  const handleSub = async () => {
+    currentUser?.subscribedUsers.includes(channel._id)
+      ? await axios.put(`/users/unsub/${channel._id}`)
+      : await axios.put(`/users/sub/${channel._id}`);
+    dispatch(subscription(channel._id));
+  };
+
+  return (
+    <Container>
+      <Content>
+        <VideoWrapper>
+          <VideoFrame src={currentVideo?.videoUrl} controls />
+        </VideoWrapper>
+        <Title>{currentVideo?.title}</Title>
+        <Details>
+          <Info>
+            {currentVideo?.views} views • {timeago}
+          </Info>
+          <Buttons>
+            <Button onClick={handleLike}>
+              {currentVideo?.likes?.includes(currentUser?._id) ? (
+                <ThumbUpIcon />
+              ) : (
+                <ThumbUpOffAltIcon />
+              )}
+              {currentVideo?.likes?.length}
+            </Button>
+            <Button onClick={handleDislike}>
+              {currentVideo?.dislikes?.includes(currentUser?._id) ? (
+                <ThumbDownIcon />
+              ) : (
+                <ThumbDownOffAltIcon />
+              )}
+              Dislike
+            </Button>
+            <Button>
+              <ReplyIcon />
+              Share
+            </Button>
+            <Button>
+              <AddTaskIcon />
+              Save
+            </Button>
+          </Buttons>
+        </Details>
+        <Hr />
+        <Channel>
+          <ChannelInfo>
+            <Image
+              src={
+                channel.img ||
+                "https://herrmans.eu/wp-content/uploads/2019/01/765-default-avatar.png"
+              }
+            />
+            <ChannelDetail>
+              <ChannelName>{channel.name}</ChannelName>
+              <ChannelCounter>{channel.subscribers} Subscribers</ChannelCounter>
+              <ChannelDesc>{currentVideo?.desc}</ChannelDesc>
+            </ChannelDetail>
+          </ChannelInfo>
+          <Subscribe onClick={handleSub}>
+            {currentUser?.subscribedUsers?.includes(channel._id)
+              ? "SUBSCRIBED"
+              : "SUBSCRIBE"}
+          </Subscribe>
+        </Channel>
+        <Hr />
+        <Comments videoId={currentVideo._id} />
+      </Content>
+      <Recommendation tags={currentVideo.tags} />
+    </Container>
+  );
+};
+
+export default Video;
 
 const Container = styled.div`
   display: flex;
@@ -50,9 +179,6 @@ const Hr = styled.hr`
   margin: 15px 0;
   border: 0.5px solid ${({ theme }) => theme.soft};
 `;
-const Recommendation = styled.div`
-  flex: 2;
-`;
 
 const Channel = styled.div`
   display: flex;
@@ -96,57 +222,8 @@ const Subscribe = styled.button`
   cursor: pointer;
 `;
 
-const Video = () => {
-  return (
-    <Container>
-      <Content>
-        <VideoWrapper></VideoWrapper>
-        <Title>Test Video</Title>
-        <Details>
-          <Info>666 views • 1 day ago</Info>
-          <Buttons>
-            <Button>
-              <ThumbUpOffAltIcon /> 123
-            </Button>
-            <Button>
-              <ThumbDownOffAltIcon />
-              Dislike
-            </Button>
-            <Button>
-              <ReplyIcon />
-              Share
-            </Button>
-            <Button>
-              <AddTaskIcon />
-              Save
-            </Button>
-          </Buttons>
-        </Details>
-        <Hr />
-        <Channel>
-          <ChannelInfo>
-            <Image src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/YouTube_full-color_icon_%282017%29.svg/2560px-YouTube_full-color_icon_%282017%29.svg.png" />
-            <ChannelDetail>
-              <ChannelName>GLad2Help</ChannelName>
-              <ChannelCounter>69 Subscribers</ChannelCounter>
-              <ChannelDesc>
-                Lorem, ipsum dolor sit amet consectetur adipisicing elit.
-                Quisquam eius minus id magni aliquam sunt ratione rem enim atque
-                voluptatum.
-              </ChannelDesc>
-            </ChannelDetail>
-          </ChannelInfo>
-          <Subscribe>SUBSCRIBE</Subscribe>
-        </Channel>
-        <Hr />
-        <Comments />
-      </Content>
-      <Recommendation>
-        <Card type="sm" />
-        <Card type="sm" />
-      </Recommendation>
-    </Container>
-  );
-};
-
-export default Video;
+const VideoFrame = styled.video`
+  max-height: 720px;
+  width: 100%;
+  object-fit: cover;
+`;
