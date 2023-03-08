@@ -2,7 +2,7 @@
 
 ![GladTube](https://i.ibb.co/3zxZ0JC/GladTube.png)
 
-GLadTube is a Full-stack YouTube clone built using the MERN stack. It is based on Lama Dev's [YouTube Tutorial](https://www.youtube.com/watch?v=CCF-xV3RSSs&list=PLj-4DlPRT48nfYgDK00oTjlDF4O0ZZyG8&index=32)
+GLadTube is a Full-stack YouTube clone built using the MERN stack. It is based on Lama Dev's [YouTube Tutorial.](https://www.youtube.com/watch?v=CCF-xV3RSSs&list=PLj-4DlPRT48nfYgDK00oTjlDF4O0ZZyG8&index=32)
 
 ## What are the features of GLadTube
 
@@ -22,7 +22,11 @@ Additionally Firebase was also used for authentication and storage.
 
 ## What are the challenges encountered
 
-Since this is a relatively new tutorial, few challenges are encountered. The one major that I have to change is the timeago package that Lama used in this tutorial since it is already outdated and it gives warning on the console.
+Since this is a relatively new tutorial, few challenges are encountered. The one thing that I have to change is the timeago package that Lama used in this tutorial since it is already outdated and it gives warning on the console.
+
+However since Lama did not deploy this app, major challenges regarding deployment are encountered where everything doesn't seem to work as intended. I am also trying to figure out what I did why access token suddenly is not working on the front end while everything is working fine on Postman. This results to user unable to use all functionality that requires verified token to proceed.
+
+![Postman](https://i.ibb.co/k55VFwc/Postman.png)
 
 ## Codebase differences
 
