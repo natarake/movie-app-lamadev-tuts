@@ -3,7 +3,6 @@ import bcrypt from "bcryptjs";
 import { createError } from "../error.js";
 import jwt from "jsonwebtoken";
 
-// signup
 export const signup = async (req, res, next) => {
   try {
     const salt = bcrypt.genSaltSync(10);
@@ -11,24 +10,22 @@ export const signup = async (req, res, next) => {
     const newUser = new User({ ...req.body, password: hash });
 
     await newUser.save();
-    res.status(200).send("newUser has been created successfully");
+    res.status(200).send("User has been created!");
   } catch (err) {
     next(err);
   }
 };
 
-// signin
 export const signin = async (req, res, next) => {
   try {
     const user = await User.findOne({ name: req.body.name });
-    if (!user) return next(createError(404, "User not found"));
+    if (!user) return next(createError(404, "User not found!"));
 
-    const isCorrect = bcrypt.compare(req.body.password, user.password);
-    if (!isCorrect) return next(createError(400, "Wrong credentials"));
+    const isCorrect = await bcrypt.compare(req.body.password, user.password);
+
+    if (!isCorrect) return next(createError(400, "Wrong Credentials!"));
 
     const token = jwt.sign({ id: user._id }, process.env.JWT);
-    // remove password before sending to user
-    // if user only there is unnecessary objects within that is _doc which contains user information
     const { password, ...others } = user._doc;
 
     res

@@ -5,7 +5,7 @@ import { loginFailure, loginStart, loginSuccess } from "../redux/userSlice";
 import { useNavigate } from "react-router-dom";
 import { auth, provider } from "../firebase";
 import { signInWithPopup } from "firebase/auth";
-import { publicRequest } from "../utilities/requestMethods";
+import axios from "axios";
 
 const Signin = () => {
   const [email, setEmail] = useState("");
@@ -20,7 +20,7 @@ const Signin = () => {
     e.preventDefault();
     dispatch(loginStart());
     try {
-      const res = await publicRequest.post("/auth/signin", { name, password });
+      const res = await axios.post("/auth/signin", { name, password });
       dispatch(loginSuccess(res.data));
       navigate("/");
     } catch (err) {
@@ -31,7 +31,7 @@ const Signin = () => {
   const handleRegister = async (e) => {
     e.preventDefault();
     try {
-      await publicRequest.post("/auth/signup", { name, email, password });
+      await axios.post("/auth/signup", { name, email, password });
       setEmail("");
       setName("");
       setPassword("");
@@ -46,7 +46,7 @@ const Signin = () => {
     dispatch(loginStart());
     signInWithPopup(auth, provider)
       .then((result) => {
-        publicRequest
+        axios
           .post("/auth/google", {
             name: result.user.displayName,
             email: result.user.email,

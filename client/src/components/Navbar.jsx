@@ -30,11 +30,11 @@ export const Navbar = () => {
               <VideoCallOutlinedIcon onClick={() => setOpen(true)} />
               <Avatar
                 src={
-                  currentUser.img ||
+                  currentUser?.img ||
                   "https://herrmans.eu/wp-content/uploads/2019/01/765-default-avatar.png"
                 }
               />
-              {currentUser.name}
+              {currentUser?.name}
             </User>
           ) : (
             <Link to="signin" style={{ textDecoration: "none" }}>
@@ -113,4 +113,5 @@ const Avatar = styled.img`
   width: 32px;
   border-radius: 50%;
   background-color: #999;
+  object-fit: cover;
 `;

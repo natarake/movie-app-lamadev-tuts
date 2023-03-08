@@ -21,13 +21,13 @@ import AddTaskIcon from "@mui/icons-material/AddTask";
 import Comments from "../components/Comments";
 import { subscription } from "../redux/userSlice";
 import Recommendation from "../components/Recommendation";
-import { publicRequest } from "../utilities/requestMethods";
+import axios from "axios";
 
 const Video = () => {
   const { currentUser } = useSelector((state) => state.user);
   const { currentVideo } = useSelector((state) => state.video);
   const dispatch = useDispatch();
-  const path = useLocation().pathname.split("/")[2];
+  const path = useLocation().pathname.split("/")[3];
 
   const [channel, setChannel] = useState({});
   const timeago = moment(currentVideo?.createdAt).fromNow();
@@ -36,8 +36,8 @@ const Video = () => {
     dispatch(fetchStart());
     const fetchData = async () => {
       try {
-        const videoRes = await publicRequest.get(`/videos/find/${path}`);
-        const channelRes = await publicRequest.get(
+        const videoRes = await axios.get(`/videos/find/${path}`);
+        const channelRes = await axios.get(
           `/users/find/${videoRes.data.userId}`
         );
         setChannel(channelRes.data);
@@ -50,19 +50,19 @@ const Video = () => {
   }, [path, dispatch]);
 
   const handleLike = async () => {
-    await publicRequest.put(`/users/like/${currentVideo?._id}`);
+    await axios.put(`/users/like/${currentVideo?._id}`);
     dispatch(like(currentUser._id));
   };
 
   const handleDislike = async () => {
-    await publicRequest.put(`/users/dislike/${currentVideo?._id}`);
+    await axios.put(`/users/dislike/${currentVideo?._id}`);
     dispatch(dislike(currentUser._id));
   };
 
   const handleSub = async () => {
-    currentUser?.subscribedUsers.includes(channel._id)
-      ? await publicRequest.put(`/users/unsub/${channel._id}`)
-      : await publicRequest.put(`/users/sub/${channel._id}`);
+    currentUser?.subscribedUsers.includes(channel?._id)
+      ? await axios.put(`/users/unsub/${channel?._id}`)
+      : await axios.put(`/users/sub/${channel?._id}`);
     dispatch(subscription(channel._id));
   };
 
@@ -109,26 +109,28 @@ const Video = () => {
           <ChannelInfo>
             <Image
               src={
-                channel.img ||
+                channel?.img ||
                 "https://herrmans.eu/wp-content/uploads/2019/01/765-default-avatar.png"
               }
             />
             <ChannelDetail>
-              <ChannelName>{channel.name}</ChannelName>
-              <ChannelCounter>{channel.subscribers} Subscribers</ChannelCounter>
+              <ChannelName>{channel?.name}</ChannelName>
+              <ChannelCounter>
+                {channel?.subscribers} Subscribers
+              </ChannelCounter>
               <ChannelDesc>{currentVideo?.desc}</ChannelDesc>
             </ChannelDetail>
           </ChannelInfo>
           <Subscribe onClick={handleSub}>
-            {currentUser?.subscribedUsers?.includes(channel._id)
+            {currentUser?.subscribedUsers?.includes(channel?._id)
               ? "SUBSCRIBED"
               : "SUBSCRIBE"}
           </Subscribe>
         </Channel>
         <Hr />
-        <Comments videoId={currentVideo._id} />
+        <Comments videoId={currentVideo?._id} />
       </Content>
-      <Recommendation tags={currentVideo.tags} />
+      <Recommendation tags={currentVideo?.tags} />
     </Container>
   );
 };
@@ -193,6 +195,7 @@ const Image = styled.img`
   width: 50px;
   height: 50px;
   border-radius: 50%;
+  object-fit: cover;
 `;
 const ChannelDetail = styled.div`
   display: flex;

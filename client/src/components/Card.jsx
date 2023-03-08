@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 import moment from "moment/moment";
 import { useEffect, useState } from "react";
-import { publicRequest } from "../utilities/requestMethods";
+import axios from "axios";
 
 const Card = ({ type, video }) => {
   const [channel, setChannel] = useState({});
@@ -10,27 +10,27 @@ const Card = ({ type, video }) => {
 
   useEffect(() => {
     const fetchChannel = async () => {
-      const res = await publicRequest.get(`/users/find/${video.userId}`);
+      const res = await axios.get(`/users/find/${video.userId}`);
       setChannel(res.data);
     };
     fetchChannel();
   }, [video.userId]);
 
   return (
-    <Link to={`/video/${video._id}`} style={{ textDecoration: "none" }}>
+    <Link to={`/videos/find/${video._id}`} style={{ textDecoration: "none" }}>
       <Container type={type}>
         <Image type={type} src={video.imgUrl} />
         <Details type={type}>
           <ChannelImage
             type={type}
             src={
-              channel.img ||
+              channel?.img ||
               "https://herrmans.eu/wp-content/uploads/2019/01/765-default-avatar.png"
             }
           />
           <Texts>
             <Title>{video.title}</Title>
-            <ChannelName>{channel.name}</ChannelName>
+            <ChannelName>{channel?.name}</ChannelName>
             <Info>
               {video.views} views • {timeago}
             </Info>
@@ -71,6 +71,7 @@ const ChannelImage = styled.img`
   width: 36px;
   border-radius: 50%;
   background-color: #999;
+  object-fit: cover;
   display: ${(props) => props.type === "sm" && "none"};
 `;
 const Texts = styled.div``;
